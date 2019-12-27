@@ -1,0 +1,12 @@
+---
+
+## Install Framadate docker
+- name: Install framadate docker
+  template:
+    src: framadate.yaml.j2
+    dest: /home/docker/framadate.yaml
+    owner: root
+    group: root
+    mode: 0400
+  notify: 
+    - start framadate docker
