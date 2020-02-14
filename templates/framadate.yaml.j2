@@ -63,7 +63,8 @@ services:
             - ADMIN_USER={{ date_admin_user }}
             - ADMIN_PASSWORD={{ date_admin_pass }}
 {% if mailname is defined %}
-            - SMTP_SERVER=smtp:25
+            - DISABLE_SMTP=true # FIXME there is a TLS connection issue between Framadate and postfix relay
+            #- SMTP_SERVER=smtp:25
 {% else %}
             - SMTP_SERVER=smtp:1025
 {% endif %}
