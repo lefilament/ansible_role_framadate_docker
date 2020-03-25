@@ -5,6 +5,9 @@ services:
         image: tecnativa/postfix-relay
         volumes:
             - smtp:/var/spool/postfix
+        networks:
+            default:
+            public:
         environment:
             MAILNAME: "{{ mailname }}"
             MAIL_RELAY_HOST: "{{ mailserver }}"
@@ -95,7 +98,9 @@ networks:
             encrypted: 1
     inverseproxy_shared:
         external: true
-{% if mailname is not defined %}
+{% if mailname is defined %}
+    public:
+{% else %}
     inverseproxy_smtp:
         external: true
 {% endif %}
