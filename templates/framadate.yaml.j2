@@ -24,13 +24,9 @@ services:
         labels:
             traefik.docker.network: "inverseproxy_smtp"
             traefik.enable: "true"
-            traefik.http.routers.framadatesmtp.entrypoints: "https"
-            traefik.http.routers.framadatesmtp.middlewares: "security-headers@file, auth@file, smtp-stripprefix@file"
+            traefik.http.routers.framadatesmtp.middlewares: "auth@file, smtp-stripprefix@file"
             traefik.http.routers.framadatesmtp.rule: "Host(`{{ date_url }}`) && PathPrefix(`/smtp/`)"
             traefik.http.routers.framadatesmtp.service: "framadatesmtp"
-            traefik.http.routers.framadatesmtp.tls: "true"
-            traefik.http.routers.framadatesmtp.tls.certresolver: "le"
-            traefik.http.routers.framadatesmtp.tls.options: "default@file"
             traefik.http.services.framadatesmtp.loadbalancer.server.port: "8025"
 {% endif %}
         container_name: framadate_smtp
@@ -76,19 +72,9 @@ services:
             default:
             inverseproxy_shared:
         labels:
-            traefik.docker.network: "inverseproxy_shared"
             traefik.enable: "true"
-            traefik.http.routers.framadate-unsec.entrypoints: "http"
-            traefik.http.routers.framadate-unsec.middlewares: "https-redirect@file"
-            traefik.http.routers.framadate-unsec.rule: "Host(`{{ date_url }}`)"
-            traefik.http.routers.framadate-unsec.service: "framadate"
-            traefik.http.routers.framadate.entrypoints: "https"
-            traefik.http.routers.framadate.middlewares: "security-headers@file"
             traefik.http.routers.framadate.rule: "Host(`{{ date_url }}`)"
             traefik.http.routers.framadate.service: "framadate"
-            traefik.http.routers.framadate.tls: "true"
-            traefik.http.routers.framadate.tls.certresolver: "le"
-            traefik.http.routers.framadate.tls.options: "default@file"
             traefik.http.services.framadate.loadbalancer.server.port: "80"
 
 networks:
