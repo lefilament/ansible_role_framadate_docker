@@ -4,7 +4,9 @@
 
 This role allows you to deploy Framadate docker with associated MariaDB and either real postfix relay or mailhog to capture sent e-mails.
 
-This role is taking advantage of [Le Filament Framadate Docker](https://hub.docker.com/repository/docker/lefilament/framadate) which is also described on corresponding [Le Filament GitHub page](https://github.com/lefilament/docker_framadate), and is collecting code directly from [Framasoft Framapad git repository](https://framagit.org/framasoft/framadate/framadate)
+This role is based on [Le Filament Framadate Docker](https://hub.docker.com/repository/docker/lefilament/framadate) which is also described on corresponding [Le Filament GitHub page](https://github.com/lefilament/docker_framadate), and is collecting code directly from [Framasoft Framapad git repository](https://framagit.org/framasoft/framadate/framadate).
+
+This role also embeds automatic backups towards swift storage every day (with one full backup every week and retention of 3 full backups) using duplicity based on [Tecnativa docker image](https://hub.docker.com/r/tecnativa/duplicity). See [Ansible docker Nextcloud role](https://github.com/lefilament/ansible_role_nextcloud_docker/blob/master/files/Dockerfile-backup) for building that docker image.
 
 Prior to running this role, you would need to have docker installed on your server and a traefik proxy (which is the purpose of [this role](https://github.com/lefilament/ansible_role_docker_server))
 
@@ -44,6 +46,15 @@ smtpport: 465
 smtpuser:
 # SMTP password
 smtppass:
+
+## Backup Swift Storage configuration
+swift_username:
+swift_password:
+swift_authurl:
+swift_authversion:
+swift_tenantname:
+swift_tenantid:
+swift_regionname:
 
 ```
 
