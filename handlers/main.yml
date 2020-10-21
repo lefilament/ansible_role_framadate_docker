@@ -1,7 +1,7 @@
 ---
 
 - name: start framadate docker
-  docker_service:
+  docker_compose:
     project_src: /home/docker/
     files: framadate.yaml
     project_name: framadate

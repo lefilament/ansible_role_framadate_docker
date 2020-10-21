@@ -7,7 +7,7 @@
     dest: /home/docker/framadate.yaml
     owner: root
     group: root
-    mode: 0400
+    mode: '0400'
   notify: 
     - start framadate docker
 
@@ -18,7 +18,7 @@
     dest: /home/docker/backups/backup-framadate.yaml
     owner: root
     group: root
-    mode: 0400
+    mode: '0400'
   when: inventory_hostname in groups['maintenance_contract']
 
 - name: Copy docker file for mysql duplicity
@@ -27,13 +27,13 @@
     dest: /home/docker/backups/Dockerfile-mysql
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   when: inventory_hostname in groups['maintenance_contract']
 
 - name: add cron job to run backup every day
   cron:
     name: backup framadate
-    minute: 03
-    hour: 3
+    minute: "03"
+    hour: "3"
     job: /usr/local/bin/docker-compose -f /home/docker/backups/backup-framadate.yaml run --rm backup_framadate 
   when: inventory_hostname in groups['maintenance_contract']
