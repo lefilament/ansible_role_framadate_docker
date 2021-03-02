@@ -24,7 +24,7 @@ ansible_become_pass:
 ansible_port: 
 
 ## Framadate configuration
-# Framadate URL
+# Framadate URL (only sub.domain without https:// in front)
 date_url:
 # Framadate DB
 date_db_root:
