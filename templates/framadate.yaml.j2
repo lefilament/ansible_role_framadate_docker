@@ -34,7 +34,7 @@ services:
 
     db:
         container_name: framadate_db
-        image: mariadb
+        image: mariadb:10.4
         environment:
             - MYSQL_ROOT_PASSWORD={{ date_db_root }}
             - MYSQL_USER={{ date_db_user }}
