@@ -53,7 +53,7 @@ services:
         environment:
             - APP_NAME=Framadate
             - DOMAIN={{ date_url }}
-            - ADMIN_MAIL={{ maintenance_email }}
+            - ADMIN_MAIL={{ default_maintenance_email }}
             - MYSQL_USER={{ date_db_user }}
             - MYSQL_PASSWORD={{ date_db_pass }}
             - MYSQL_DB={{ date_db_user }}

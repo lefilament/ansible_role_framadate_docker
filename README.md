@@ -1,72 +1,68 @@
-# Ansible role to deploy Framadate server docker
+docker_framadate
+================
 
-[![](https://img.shields.io/badge/licence-AGPL--3-blue.svg)](http://www.gnu.org/licenses/agpl "License: AGPL-3")
+This role deploys Framadate in a Docker. This role is based on [Le Filament Framadate Docker](https://hub.docker.com/repository/docker/lefilament/framadate) which is also described on corresponding [Le Filament GitHub page](https://github.com/lefilament/docker_framadate), and is collecting code directly from [Framasoft Framapad git repository](https://framagit.org/framasoft/framadate/framadate).
+The main repo for this role is on [Le Filament GitLab](https://sources.le-filament.com/lefilament/ansible-roles/docker_server.git)
 
-This role allows you to deploy Framadate docker with associated MariaDB and either real postfix relay or mailhog to capture sent e-mails.
+Requirements
+------------
 
-This role is based on [Le Filament Framadate Docker](https://hub.docker.com/repository/docker/lefilament/framadate) which is also described on corresponding [Le Filament GitHub page](https://github.com/lefilament/docker_framadate), and is collecting code directly from [Framasoft Framapad git repository](https://framagit.org/framasoft/framadate/framadate).
+None
 
-This role also embeds automatic backups towards swift storage every day (with one full backup every week and retention of 3 full backups) using duplicity based on [Tecnativa docker image](https://hub.docker.com/r/tecnativa/duplicity). See [Ansible docker Nextcloud role](https://github.com/lefilament/ansible_role_nextcloud_docker/blob/master/files/Dockerfile-backup) for building that docker image.
+Role Variables
+--------------
 
-Prior to running this role, you would need to have docker installed on your server and a traefik proxy (which is the purpose of [this role](https://github.com/lefilament/ansible_role_docker_server))
+Variables from default directory :
+* date_url: URL on which Framadate will be listening
+* date_db_root: Database root password
+* date_db_user: Database user
+* date_db_pass: Database password
+* date_admin_user: Framadate Admin user
+* date_admin_pass: Framadate Admin password
+* default_maintenance_email: Framadate Admin e-mail
 
-In order to use this role, you would need to define the following variables for your server (in hostvars for instance) - Only the names of the variables are provided below (not the values) for these used by this role to properly configure everything, you may copy this file directly in hostvars and set the variable although we could only encourage you to use an Ansible vault and refer vault variables from there:
+* Mail configuration (optional, if set, a postfix proxy will be deployed, otherwise a mailhog instance will be deployed for blocking e-mails)
+  * mailname: domain to which the users belong to
+  * mailserver: SMTP server to use for sending e-mails (defaults to smtp.{{ domain }})
+  * smtpport: SMTP server port (defaults to 465)
+  * smtpuser: SMTP username (defaults to smtpuser)
+  * smtppass: SMTP user password (defaults to veryUnsecurePassToBeModified)
+* Backups (for backups to be deployed, host needs to be in maintenance_contract group)
+  * swift parameters for 2 object storage instances where backups should be pushed daily
+  * date_backup_pass : Passphrase for encryption of backups
 
-```json
-## Ansible configuration for connecting to remote host
-# IP address of server
-ansible_host: 
-# User to be used on server (to which Ansible server public key has been provided)
-ansible_user: 
-# Encryped password (for elevating rights / sudo)
-ansible_become_pass: 
-# Server SSHD port
-ansible_port: 
+Dependencies
+------------
 
-## Framadate configuration
-# Framadate URL (only sub.domain without https:// in front)
-date_url:
-# Framadate DB
-date_db_root:
-date_db_user:
-date_db_pass:
-# Framadate Admin Password
-date_admin_user:
-date_admin_pass:
+This role requires the following Ansible collection :
+* community.docker
 
-## Mail server configuration - for Framadate 
-## if the following variables are not defined, mailhog will be deployed instead
-# Mail domain
-mailname:
-# Mail server
-mailserver:
-# SMTP port
-smtpport: 465
-# SMTP user
-smtpuser:
-# SMTP password
-smtppass:
+This Docker role supposes that Traefik is deployed as an inverseproxy in front of the deployed Dockers.
+The following role is used by Le Filament for deploying Traefik : docker_server (https://sources.le-filament.com/lefilament/ansible-roles/docker_server)
 
-## Backup Swift Storage configuration
-swift_username:
-swift_password:
-swift_authurl:
-swift_authversion:
-swift_tenantname:
-swift_tenantid:
-swift_regionname:
+Example Playbook
+----------------
 
-```
+Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-# Credits
+    - hosts: servers
+      roles:
+         - { role: docker_framadate }
+      vars:
+         - { date_url: "date.example.org" }
+         - { date_db_root: "veryUnsecureRootPassToBeModified" }
+         - { date_db_user: "framadate" }
+         - { date_db_pass: "veryUnsecurePassToBeModified" }
+         - { date_admin_user: "admin" }
+         - { date_admin_pass: "veryUnsecureAdminPassToBeModified" }
+         - { default_maintenance_email: "maintenance@example.org" }
 
-## Contributors
+License
+-------
 
-* Remi Cazenave <remi-filament>
+AGPL-3
 
+Author Information
+------------------
 
-## Maintainer
-
-[![](https://le-filament.com/img/logo-lefilament.png)](https://le-filament.com "Le Filament")
-
-This role is maintained by Le Filament
+Le Filament (https://le-filament.com)

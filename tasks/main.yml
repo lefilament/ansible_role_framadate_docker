@@ -8,7 +8,7 @@
     owner: root
     group: root
     mode: '0400'
-  notify: 
+  notify:
     - start framadate docker
 
 ## Backup Framadate section
@@ -16,6 +16,15 @@
   template:
     src: backup.yaml.j2
     dest: /home/docker/backups/backup-framadate.yaml
+    owner: root
+    group: root
+    mode: '0400'
+  when: inventory_hostname in groups['maintenance_contract']
+
+- name: Install Framadate backup2 compose file
+  template:
+    src: backup2.yaml.j2
+    dest: /home/docker/backups/backup2-framadate.yaml
     owner: root
     group: root
     mode: '0400'
@@ -35,5 +44,13 @@
     name: backup framadate
     minute: "03"
     hour: "3"
-    job: /usr/local/bin/docker-compose -f /home/docker/backups/backup-framadate.yaml run --rm backup_framadate 
+    job: /usr/local/bin/docker-compose -f /home/docker/backups/backup-framadate.yaml run --rm backup_framadate
+  when: inventory_hostname in groups['maintenance_contract']
+
+- name: add cron job to run backup2 every day
+  cron:
+    name: backup2 framadate
+    minute: "23"
+    hour: "5"
+    job: /usr/local/bin/docker-compose -f /home/docker/backups/backup2-framadate.yaml run --rm backup_framadate
   when: inventory_hostname in groups['maintenance_contract']
