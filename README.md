@@ -2,7 +2,7 @@ docker_framadate
 ================
 
 This role deploys Framadate in a Docker. This role is based on [Le Filament Framadate Docker](https://hub.docker.com/repository/docker/lefilament/framadate) which is also described on corresponding [Le Filament GitHub page](https://github.com/lefilament/docker_framadate), and is collecting code directly from [Framasoft Framapad git repository](https://framagit.org/framasoft/framadate/framadate).
-The main repo for this role is on [Le Filament GitLab](https://sources.le-filament.com/lefilament/ansible-roles/docker_server.git)
+The main repo for this role is on [Le Filament GitLab](https://sources.le-filament.com/lefilament/ansible-roles/docker_framadate.git)
 
 Requirements
 ------------
