@@ -5,7 +5,7 @@ services:
             context: .
             dockerfile: Dockerfile-mysql
         image: filament/duplicity:mysql
-        hostname: backup-framadate
+        hostname: {{ inventory_hostname_short | lower | regex_replace('_','') }}-framadate
         environment:
             DST: "swift://framadate_{{ inventory_hostname|lower }}"
             MYSQL_DATABASE: "{{ date_db_user }}"
@@ -23,9 +23,12 @@ services:
             JOB_300_WHAT: "backup --full-if-older-than 6D"
             JOB_302_WHAT: "dup remove-all-but-n-full 5 --force $$DST $$@"
             JOB_302_WHEN: "daily"
+            OPTIONS: "--allow-source-mismatch"
         networks:
             - framadate_default
             - public
+        volumes:
+            - date_backup2_cache:/root/.cache/duplicity/
         command:
             - /etc/periodic/daily/jobrunner
 
@@ -35,3 +38,6 @@ networks:
     public:
         driver_opts:
             encrypted: 1
+
+volumes:
+    date_backup2_cache:
