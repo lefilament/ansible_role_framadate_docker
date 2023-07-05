@@ -1,10 +1,10 @@
 ---
 
-- name: start framadate docker
-  docker_compose:
-    project_src: /home/docker/
-    files: framadate.yaml
-    project_name: framadate
+- name: Start framadate docker
+  community.docker.docker_compose:
+      project_src: /home/docker/
+      files: framadate.yaml
+      project_name: framadate
   async: 120
   poll: 10
   when: not ansible_check_mode

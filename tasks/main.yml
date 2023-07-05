@@ -2,55 +2,55 @@
 
 ## Install Framadate docker
 - name: Install framadate docker
-  template:
-    src: framadate.yaml.j2
-    dest: /home/docker/framadate.yaml
-    owner: root
-    group: root
-    mode: '0400'
+  ansible.builtin.template:
+      src: framadate.yaml.j2
+      dest: /home/docker/framadate.yaml
+      owner: root
+      group: root
+      mode: '0400'
   notify:
-    - start framadate docker
+      - Start framadate docker
 
 ## Backup Framadate section
 - name: Install Framadate backup compose file
-  template:
-    src: backup.yaml.j2
-    dest: /home/docker/backups/backup-framadate.yaml
-    owner: root
-    group: root
-    mode: '0400'
+  ansible.builtin.template:
+      src: backup.yaml.j2
+      dest: /home/docker/backups/backup-framadate.yaml
+      owner: root
+      group: root
+      mode: '0400'
   when: inventory_hostname in groups['maintenance_contract']
 
 - name: Install Framadate backup2 compose file
-  template:
-    src: backup2.yaml.j2
-    dest: /home/docker/backups/backup2-framadate.yaml
-    owner: root
-    group: root
-    mode: '0400'
+  ansible.builtin.template:
+      src: backup2.yaml.j2
+      dest: /home/docker/backups/backup2-framadate.yaml
+      owner: root
+      group: root
+      mode: '0400'
   when: inventory_hostname in groups['maintenance_contract']
 
-- name: Copy docker file for mysql duplicity
-  copy:
-    src: ../docker_nextcloud/files/Dockerfile-backup
-    dest: /home/docker/backups/Dockerfile-mysql
-    owner: root
-    group: root
-    mode: '0644'
+- name: Get docker file for mysql duplicity from docker_nextcloud role
+  ansible.builtin.get_url:
+      url: "https://sources.le-filament.com/lefilament/ansible-roles/docker_nextcloud/-/raw/master/files/Dockerfile-backup"
+      dest: /home/docker/backups/Dockerfile-mysql
+      owner: root
+      group: root
+      mode: '0644'
   when: inventory_hostname in groups['maintenance_contract']
 
-- name: add cron job to run backup every day
-  cron:
-    name: backup framadate
-    minute: "03"
-    hour: "3"
-    job: /usr/local/bin/docker-compose -f /home/docker/backups/backup-framadate.yaml run --rm backup_framadate
+- name: Add cron job to run backup every day
+  ansible.builtin.cron:
+      name: backup framadate
+      minute: "15"
+      hour: "04"
+      job: /usr/bin/docker-compose -f /home/docker/backups/backup-framadate.yaml run --rm backup_framadate
   when: inventory_hostname in groups['maintenance_contract']
 
-- name: add cron job to run backup2 every day
-  cron:
-    name: backup2 framadate
-    minute: "23"
-    hour: "5"
-    job: /usr/local/bin/docker-compose -f /home/docker/backups/backup2-framadate.yaml run --rm backup_framadate
+- name: Add cron job to run backup2 every day
+  ansible.builtin.cron:
+      name: backup2 framadate
+      minute: "25"
+      hour: "01"
+      job: /usr/bin/docker-compose -f /home/docker/backups/backup2-framadate.yaml run --rm backup_framadate
   when: inventory_hostname in groups['maintenance_contract']
